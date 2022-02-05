@@ -1,7 +1,8 @@
 import random
-import pandas as pd
+
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 import psycopg2.extras
 import streamlit as st
 
@@ -97,12 +98,16 @@ class BubbleChart:
 
 
 def app():
+    # Main
     st.title("Reddit Community Distribution")
     st.write("Distribution of finance related subreddits")
     cursor.execute("""
         SELECT * FROM reddit_community_distribution
         """)
     communities = cursor.fetchall()
+
+    # Sidebar
+    display_amount = st.sidebar.slider("Display Amount", 2, len(communities), 10)
 
     subreddit = []
     subscribers = []  # st.write(communities)
@@ -114,12 +119,12 @@ def app():
         color.append('#%02X%02X%02X' % (r(), r(), r()))
 
     reddit_community_distribution = {
-        'subreddit': subreddit,
-        'subscribers': subscribers,
-        'color': color
+        'subreddit': subreddit[:display_amount],
+        'subscribers': subscribers[:display_amount],
+        'color': color[:display_amount]
     }
 
-    bubble_chart = BubbleChart(area=reddit_community_distribution['subscribers'], bubble_spacing=0.1)
+    bubble_chart = BubbleChart(area=reddit_community_distribution['subscribers'], bubble_spacing=50)
     bubble_chart.collapse()
     fig, ax = plt.subplots(subplot_kw=dict(aspect="equal"))
     bubble_chart.plot(ax, reddit_community_distribution['subreddit'], reddit_community_distribution['color'])
@@ -128,5 +133,19 @@ def app():
     ax.autoscale_view()
     st.pyplot(fig)
 
+    reddit_community_distribution = {
+        'Subreddit': subreddit[:display_amount],
+        'Subscribers': subscribers[:display_amount],
+    }
     df = pd.DataFrame(reddit_community_distribution)
+    # CSS to inject contained in a string
+    hide_table_row_index = """
+                <style>
+                tbody th {display:none}
+                .blank {display:none}
+                </style>
+                """
+
+    # Inject CSS with Markdown
+    st.markdown(hide_table_row_index, unsafe_allow_html=True)
     st.table(df)
