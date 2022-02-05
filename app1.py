@@ -100,14 +100,14 @@ class BubbleChart:
 def app():
     # Main
     st.title("Reddit Community Distribution")
-    st.write("Distribution of finance related subreddits")
+    st.success("Distribution of finance related subreddits based on Reddit: https://www.reddit.com/")
     cursor.execute("""
         SELECT * FROM reddit_community_distribution
         """)
     communities = cursor.fetchall()
 
     # Sidebar
-    display_amount = st.sidebar.slider("Display Amount", 2, len(communities), 10)
+    display_amount = st.sidebar.slider("Display Amount", 2, len(communities), 8)
 
     subreddit = []
     subscribers = []  # st.write(communities)
