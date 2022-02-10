@@ -1,12 +1,13 @@
 import streamlit as st
 
-import app1
-import app2
+import reddit_community_distribution
+import reddit_corpus
 
 PAGES = {
-    "Reddit Community Distribution": app1,
-    "2": app2,
+    "Reddit Community Distribution": reddit_community_distribution,
+    "Reddit Corpus": reddit_corpus,
 }
+
 st.set_page_config(
     page_title="Reddit Sentiment Index: Stock Price Movement Prediction with Valence Aware Dictionary Sentiment Reasoner",
     page_icon="🚀",
@@ -18,6 +19,14 @@ st.set_page_config(
         'About': "# Made with ❤️. *Tsui Hoi Ming*"
     }
 )
+
+hide_streamlit_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            </style>
+            """
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 st.sidebar.title("Navigation")
 selection = st.sidebar.selectbox("Dashboard", list(PAGES.keys()))

@@ -3,13 +3,15 @@ import random
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import plotly.express as px
 import psycopg2.extras
 import streamlit as st
 
 import config
 
-connection = psycopg2.connect(host=config.DB_HOST, database=config.DB_NAME, user=config.DB_USER,
-                              password=config.DB_PASS)
+connection = psycopg2.connect(host=config.AZURE_PSQL_DB_HOST, database=config.AZURE_PSQL_DB_NAME,
+                              user=config.AZURE_PSQL_DB_USER,
+                              password=config.AZURE_PSQL_DB_PASS)
 cursor = connection.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
 
@@ -93,14 +95,15 @@ class BubbleChart:
             circ = plt.Circle(
                 self.bubbles[i, :2], self.bubbles[i, 2], color=colors[i])
             ax.add_patch(circ)
-            ax.text(*self.bubbles[i, :2], labels[i],
-                    horizontalalignment='center', verticalalignment='center')
+            if i <= 8:
+                ax.text(*self.bubbles[i, :2], labels[i],
+                        horizontalalignment='center', verticalalignment='center')
 
 
 def app():
     # Main
     st.title("Reddit Community Distribution")
-    st.success("Distribution of finance related subreddits based on Reddit: https://www.reddit.com/")
+    st.success("Distribution of finance related subreddits")
     cursor.execute("""
         SELECT * FROM reddit_community_distribution
         """)
@@ -148,4 +151,16 @@ def app():
 
     # Inject CSS with Markdown
     st.markdown(hide_table_row_index, unsafe_allow_html=True)
-    st.table(df)
+
+    fig2 = px.pie(df, values='Subscribers', names='Subreddit', color_discrete_sequence=color)
+    # fig2.update_layout(showlegend=False)
+
+    col1, col2 = st.columns(2)
+    with col1:
+        st.subheader("Data Table")
+        with st.expander("View Details"):
+            st.table(df)
+    with col2:
+        st.subheader("Pie Chart")
+        st.plotly_chart(fig2, use_container_width=True)
+    st.markdown("""---""")
