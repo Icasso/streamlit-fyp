@@ -9,9 +9,9 @@ import streamlit as st
 
 import config
 
-connection = psycopg2.connect(host=config.AZURE_PSQL_DB_HOST, database=config.AZURE_PSQL_DB_NAME,
-                              user=config.AZURE_PSQL_DB_USER,
-                              password=config.AZURE_PSQL_DB_PASS)
+connection = psycopg2.connect(host=config.DB_HOST, database=config.DB_NAME,
+                              user=config.DB_USER,
+                              password=config.DB_PASS)
 cursor = connection.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
 

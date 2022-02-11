@@ -2,10 +2,12 @@ import streamlit as st
 
 import reddit_community_distribution
 import reddit_corpus
+import reddit_comment_volume
 
 PAGES = {
     "Reddit Community Distribution": reddit_community_distribution,
     "Reddit Corpus": reddit_corpus,
+    "Reddit Comment Volume": reddit_comment_volume,
 }
 
 st.set_page_config(
