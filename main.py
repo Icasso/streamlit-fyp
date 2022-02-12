@@ -2,12 +2,20 @@ import streamlit as st
 
 import reddit_community_distribution
 import reddit_corpus
-import reddit_comment_volume
+import exploratory_data_analysis
+import trending_stocks_of_the_day
+import sentiment_analysis
+import evaluation_measure
+import trading_strategy
 
 PAGES = {
     "Reddit Community Distribution": reddit_community_distribution,
     "Reddit Corpus": reddit_corpus,
-    "Reddit Comment Volume": reddit_comment_volume,
+    "Exploratory Data Analysis": exploratory_data_analysis,
+    "Trending Stocks of the Day": trending_stocks_of_the_day,
+    "Sentiment Analysis": sentiment_analysis,
+    "Evaluation Measure": evaluation_measure,
+    "Trading Strategy": trading_strategy
 }
 
 st.set_page_config(
