@@ -56,6 +56,7 @@ def app():
                 fig = px.bar(x=symbol_list, y=volume_list, labels={'x': 'Symbol', 'y': 'Volume'},
                              title="Top {0} mentioned stocks on {1}".format(int(num), d.strftime("%Y-%m-%d")))
                 st.plotly_chart(fig)
+            # TODO CHANGE CHART
             with col2:
                 fig = px.bar(x=symbol_list, y=volume_list, labels={'x': 'Symbol', 'y': 'Volume'},
                              title="Sentiment for the top {0} mentioned stocks on {1}".format(int(num),

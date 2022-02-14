@@ -158,8 +158,7 @@ def app():
     col1, col2 = st.columns(2)
     with col1:
         st.subheader("Data Table")
-        with st.expander("View Details"):
-            st.table(df)
+        st.table(df)
     with col2:
         st.subheader("Pie Chart")
         st.plotly_chart(fig2, use_container_width=True)

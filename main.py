@@ -1,12 +1,12 @@
 import streamlit as st
 
+import evaluation_measure
+import exploratory_data_analysis
 import reddit_community_distribution
 import reddit_corpus
-import exploratory_data_analysis
-import trending_stocks_of_the_day
 import sentiment_analysis
-import evaluation_measure
 import trading_strategy
+import trending_stocks_of_the_day
 
 PAGES = {
     "Reddit Community Distribution": reddit_community_distribution,
@@ -29,7 +29,7 @@ st.set_page_config(
         'About': "# Made with ❤️. *Tsui Hoi Ming*"
     }
 )
-
+# TODO UNHIDE
 hide_streamlit_style = """
             <style>
             header {visibility: hidden;}
