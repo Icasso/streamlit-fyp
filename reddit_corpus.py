@@ -1,21 +1,8 @@
 import pandas as pd
 import plotly.express as px
-import psycopg2.extras
 import streamlit as st
 
-import config
-
-connection = psycopg2.connect(host=config.DB_HOST, database=config.DB_NAME,
-                              user=config.DB_USER,
-                              password=config.DB_PASS)
-cursor = connection.cursor(cursor_factory=psycopg2.extras.DictCursor)
-
-
-@st.cache
-def query(sql):
-    cursor.execute(sql)
-    results = cursor.fetchall()
-    return results
+from tables import reddit_corpus_pre, sample_unprocessed_data, pre_stats, stock_symbol_stats, stock_data_set
 
 
 def app():
@@ -28,21 +15,12 @@ def app():
         st.header("Data Collection")
         col1, col2 = st.columns(2)
         with col1:
-            try:
-                results = query("""
-                SELECT * FROM reddit_corpus_pre
-                """)
-                month_list = [result[1] for result in results]
-                count_list = [result[2] for result in results]
-                # st.write(month_list, count_list)
-                fig = px.bar(x=month_list, y=count_list, labels={'x': 'Month', 'y': 'Reddit Corpus Volume'},
-                             title="Sub-reddit r/wallstreetbets comment volume across 2021 collected via PushshiftAPI")
-                st.plotly_chart(fig)
-            except (Exception, psycopg2.Error) as error:
-                print("Error while fetching data from PostgreSQL", error)
-                st.warning("Error while fetching data from PostgreSQL")
-                connection.rollback()
-        # column 2
+            results = reddit_corpus_pre
+            fig = px.bar(x=results['month_list'], y=results['count_list'],
+                         labels={'x': 'Month', 'y': 'Reddit Corpus Volume'},
+                         title="Sub-reddit r/wallstreetbets comment volume across 2021 collected via PushshiftAPI")
+            st.plotly_chart(fig)
+
         with col2:
             code = '''
         import pandas as pd
@@ -51,7 +29,7 @@ def app():
         
         import datetime as dt
         after = int(dt.datetime(2021,1,1,0,1).timestamp())
-        before = int(dt.datetime(2021,12,31,23,59).timestamp())
+        before = int(dt.datetime(2021,11,28,23,59).timestamp())
         
         subreddit = 'wallstreetbets'
         comments = api.search_comments(subreddit=subreddit, after=after, filter=['body', 'created_utc'])
@@ -74,76 +52,17 @@ def app():
             "Minimum Viable Product approach. Tokenization, Stopword Removal, Regular Expression (RegEx) Matching "
             "techniques")
         st.subheader("Sample un-processed data")
-        # Table
-        try:
-            results = query("""
-            SELECT * FROM reddit_corpus_sample
-            """)
-            id_list = [result[0] for result in results]
-            body_list = [result[1] for result in results]
-            created_utc_list = [result[2] for result in results]
-            # st.write(body_list, created_utc_list)
-            sample_unprocessed_data = {
-                'id': id_list,
-                'body': body_list,
-                'created_utc': created_utc_list
-            }
-            df = pd.DataFrame(sample_unprocessed_data)
-            # CSS to inject contained in a string
-            hide_table_row_index = """
-                                <style>
-                                tbody th {display:none}
-                                .blank {display:none}
-                                </style>
-                                """
-
-            # Inject CSS with Markdown
-            st.markdown(hide_table_row_index, unsafe_allow_html=True)
-            st.table(df)
-
-        except (Exception, psycopg2.Error) as error:
-            print("Error while fetching data from PostgreSQL", error)
-            st.warning("Error while fetching data from PostgreSQL")
-            connection.rollback()
-
+        df = pd.DataFrame(sample_unprocessed_data)
+        st.table(df)
         st.subheader("Concatenate into two stages of processing")
         col1, col2 = st.columns(2)
         with col1:
-            try:
-                results = query("""
-                SELECT * FROM reddit_corpus_pre_stats
-                """)
-                created_utc_list = [result[1] for result in results]
-                raw_list = [result[2] for result in results]
-                empty_list = [result[3] for result in results]
-                regex_list = [result[4] for result in results]
+            df = pd.DataFrame.from_dict(pre_stats)
+            st.table(df)
+            fig = px.bar(df, x='Month', y='Second Stage Cleaning',
+                         title="Volume of Reddit Corpus after two stages of cleaning")
+            st.plotly_chart(fig)
 
-                pre_stats = {
-                    'created_utc': created_utc_list,
-                    'Corpus': raw_list,
-                    'First Stage Cleaning': empty_list,
-                    'Second Stage Cleaning': regex_list
-                }
-                df = pd.DataFrame.from_dict(pre_stats)
-                hide_table_row_index = """
-                                    <style>
-                                    tbody th {display:none}
-                                    .blank {display:none}
-                                    </style>
-                                    """
-
-                # Inject CSS with Markdown
-                st.markdown(hide_table_row_index, unsafe_allow_html=True)
-                st.table(df)
-                fig = px.bar(df, x='created_utc', y='Second Stage Cleaning',
-                             labels={'created_utc': 'Month', 'Second Stage Cleaning': 'Number of comments'},
-                             title="Volume of Reddit Corpus after two stages of cleaning")
-                st.plotly_chart(fig)
-
-            except (Exception, psycopg2.Error) as error:
-                print("Error while fetching data from PostgreSQL", error)
-                st.warning("Error while fetching data from PostgreSQL")
-                connection.rollback()
         with col2:
             st.write("Body - Comment processing")
             code = '''
@@ -167,3 +86,31 @@ comments_df
             st.code(code2, language="python")
 
         st.subheader("Stock Symbol Extraction")
+        col1, col2 = st.columns(2)
+        with col1:
+            df = pd.DataFrame(stock_symbol_stats)
+            st.table(df)
+            fig = px.pie(df, values='Number of comments', names='Comment contains stock symbol',
+                         title="Number of comments containing stock symbols from 01/01/21 - 28/11/21")
+            st.plotly_chart(fig)
+
+        with col2:
+            code = '''
+            body_list = comment_df.body.tolist()
+symbol_list = []
+for i in body_list:
+    inserted = False
+    split = i.split(" ")
+    for word in split:
+        word = word.replace("$", "")
+        if word.isupper() and len(word) <= 5 and word in us:
+            symbol_list.append(word)
+            inserted = True
+            break
+    if not inserted:
+        symbol_list.append("")
+symbol_list'''
+            st.code(code, language="python")
+            st.info("Statistics overview of 3 Exchanges in US, and the selected stock symbols")
+            df = pd.DataFrame(stock_data_set)
+            st.table(df)

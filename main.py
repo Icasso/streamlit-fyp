@@ -34,6 +34,8 @@ hide_streamlit_style = """
             <style>
             header {visibility: hidden;}
             #MainMenu {visibility: hidden;}
+            tbody th {display:none}
+            .blank {display:none}
             footer {visibility: hidden;}
             </style>
             """

@@ -5,12 +5,7 @@ import plotly.express as px
 import psycopg2.extras
 import streamlit as st
 
-import config
-
-connection = psycopg2.connect(host=config.DB_HOST, database=config.DB_NAME,
-                              user=config.DB_USER,
-                              password=config.DB_PASS)
-cursor = connection.cursor(cursor_factory=psycopg2.extras.DictCursor)
+from database import connection, cursor
 
 
 @st.cache
@@ -73,16 +68,6 @@ def app():
             "Stock": comment_symbol_list
         }
         df = pd.DataFrame(comments)
-        # CSS to inject contained in a string
-        hide_table_row_index = """
-                    <style>
-                    tbody th {display:none}
-                    .blank {display:none}
-                    </style>
-                    """
-
-        # Inject CSS with Markdown
-        st.markdown(hide_table_row_index, unsafe_allow_html=True)
         st.table(df)
 
     except (Exception, psycopg2.Error) as error:

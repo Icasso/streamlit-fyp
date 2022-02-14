@@ -4,15 +4,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import plotly.express as px
-import psycopg2.extras
+import psycopg2
 import streamlit as st
 
-import config
-
-connection = psycopg2.connect(host=config.DB_HOST, database=config.DB_NAME,
-                              user=config.DB_USER,
-                              password=config.DB_PASS)
-cursor = connection.cursor(cursor_factory=psycopg2.extras.DictCursor)
+from database import connection, cursor
 
 
 class BubbleChart:
@@ -100,66 +95,66 @@ class BubbleChart:
                         horizontalalignment='center', verticalalignment='center')
 
 
+@st.cache
+def query(sql):
+    cursor.execute(sql)
+    results = cursor.fetchall()
+    return results
+
+
 def app():
     # Main
     st.title("Reddit Community Distribution")
     st.success("Distribution of finance related subreddits")
-    cursor.execute("""
+    try:
+        communities = query("""
         SELECT * FROM reddit_community_distribution
         """)
-    communities = cursor.fetchall()
 
-    # Sidebar
-    display_amount = st.sidebar.slider("Display Amount", 2, len(communities), 8)
+        # Sidebar
+        display_amount = st.sidebar.slider("Display Amount", 2, len(communities), 8)
 
-    subreddit = []
-    subscribers = []  # st.write(communities)
-    color = []
-    for community in communities:
-        subreddit.append(community['Subreddit'])
-        subscribers.append(community['Subscribers'])
-        r = lambda: random.randint(0, 255)
-        color.append('#%02X%02X%02X' % (r(), r(), r()))
+        subreddit = []
+        subscribers = []
+        color = []
+        for community in communities:
+            subreddit.append(community['Subreddit'])
+            subscribers.append(community['Subscribers'])
+            r = lambda: random.randint(0, 255)
+            color.append('#%02X%02X%02X' % (r(), r(), r()))
 
-    reddit_community_distribution = {
-        'subreddit': subreddit[:display_amount],
-        'subscribers': subscribers[:display_amount],
-        'color': color[:display_amount]
-    }
+        reddit_community_distribution = {
+            'subreddit': subreddit[:display_amount],
+            'subscribers': subscribers[:display_amount],
+            'color': color[:display_amount]
+        }
 
-    bubble_chart = BubbleChart(area=reddit_community_distribution['subscribers'], bubble_spacing=50)
-    bubble_chart.collapse()
-    fig, ax = plt.subplots(subplot_kw=dict(aspect="equal"))
-    bubble_chart.plot(ax, reddit_community_distribution['subreddit'], reddit_community_distribution['color'])
-    ax.axis('off')
-    ax.relim()
-    ax.autoscale_view()
-    st.pyplot(fig)
+        bubble_chart = BubbleChart(area=reddit_community_distribution['subscribers'], bubble_spacing=50)
+        bubble_chart.collapse()
+        fig, ax = plt.subplots(subplot_kw=dict(aspect="equal"))
+        bubble_chart.plot(ax, reddit_community_distribution['subreddit'], reddit_community_distribution['color'])
+        ax.axis('off')
+        ax.relim()
+        ax.autoscale_view()
+        st.pyplot(fig)
 
-    reddit_community_distribution = {
-        'Subreddit': subreddit[:display_amount],
-        'Subscribers': subscribers[:display_amount],
-    }
-    df = pd.DataFrame(reddit_community_distribution)
-    # CSS to inject contained in a string
-    hide_table_row_index = """
-                <style>
-                tbody th {display:none}
-                .blank {display:none}
-                </style>
-                """
+        reddit_community_distribution = {
+            'Subreddit': subreddit[:display_amount],
+            'Subscribers': subscribers[:display_amount],
+        }
+        df = pd.DataFrame(reddit_community_distribution)
 
-    # Inject CSS with Markdown
-    st.markdown(hide_table_row_index, unsafe_allow_html=True)
+        fig2 = px.pie(df, values='Subscribers', names='Subreddit', color_discrete_sequence=color)
 
-    fig2 = px.pie(df, values='Subscribers', names='Subreddit', color_discrete_sequence=color)
-    # fig2.update_layout(showlegend=False)
-
-    col1, col2 = st.columns(2)
-    with col1:
-        st.subheader("Data Table")
-        st.table(df)
-    with col2:
-        st.subheader("Pie Chart")
-        st.plotly_chart(fig2, use_container_width=True)
-    st.markdown("""---""")
+        col1, col2 = st.columns(2)
+        with col1:
+            st.subheader("Data Table")
+            st.table(df)
+        with col2:
+            st.subheader("Pie Chart")
+            st.plotly_chart(fig2, use_container_width=True)
+        st.markdown("""---""")
+    except (Exception, psycopg2.Error) as error:
+        print("Error while fetching data from PostgreSQL", error)
+        st.warning("That date does not contain any comments after data processing, please select another date.")
+        connection.rollback()
