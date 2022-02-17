@@ -31,3 +31,22 @@ stock_data_set = {
     'Market Cap > $50M': [3255, 2577, 186],
     'Stock Price > $3': [3618, 3094, 168]
 }
+# EDA
+top_10_mentioned_stocks = {
+    'Stock': ['GME', 'AMC', 'BB', 'PLTR', 'TSLA', 'RH', 'NOK', 'RKT', 'AMD', 'TLRY'],
+    'Company': ['GameStop Corp.', 'AMC Entertainment Holdings, Inc.', 'BlackBerry Limited',
+                'Palantir Technologies Inc,', 'Tesla, Inc.', 'RH, Inc.', 'Nokia Corporation', 'Rocket Companies, Inc.',
+                'Advanced Micro Devices, Inc', 'Tilray Brands, Inc.'],
+    'Count': [517224, 209970, 140441, 76165, 76020, 63948, 47086, 32206, 30151, 28382]
+}
+# Sentiment Analysis
+textblob_distribution = {
+    'Sentiment': ['Polarity', 'Subjectivity', 'Intensity'],
+    'Description': ['Negative vs Positive', 'Objective vs Subjective', 'Modification of next word'],
+    'Value': ['(-1.0 => +1.0)', '(+0.0 => +1.0)', '(*0.5 => *2.0)']
+}
+vader_distribution = {
+    'Sentiment': ['Positive', 'Negative', 'Neutral'],
+    'Compound score': ['compound score >= 0.05', 'compound score > -0.05 and compound score < 0.05',
+                       'compound score <= -0.05']
+}
