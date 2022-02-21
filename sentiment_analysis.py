@@ -14,7 +14,7 @@ def query(sql):
 
 
 def app():
-    st.title("Sentiment Analysis")
+    st.title("Sentiment Analysis - Part 1")
     st.success("Sentiment Analysis on Reddit Corpus")
 
     container_1 = st.container()

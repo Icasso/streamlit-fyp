@@ -25,7 +25,8 @@ def app():
                               max_value=datetime.date(2021, 11, 28))
     num = st.sidebar.number_input("Most Mentioned Symbols amount", value=10, min_value=1, max_value=100)
     st.sidebar.markdown("---")
-    text_input = st.sidebar.text_input("Search for a symbol", value="", max_chars=5)
+    # TODO text input update
+    # text_input = st.sidebar.text_input("Search for a symbol", value="", max_chars=5)
 
     # Query
     try:

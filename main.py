@@ -5,6 +5,7 @@ import exploratory_data_analysis
 import reddit_community_distribution
 import reddit_corpus
 import sentiment_analysis
+import sentiment_analysis_2
 import trading_strategy
 import trending_stocks_of_the_day
 
@@ -13,8 +14,9 @@ PAGES = {
     "Reddit Corpus": reddit_corpus,
     "Exploratory Data Analysis": exploratory_data_analysis,
     "Trending Stocks of the Day": trending_stocks_of_the_day,
-    "Sentiment Analysis": sentiment_analysis,
-    "Evaluation Measure": evaluation_measure,
+    "Sentiment Analysis I": sentiment_analysis,
+    "Sentiment Analysis II": sentiment_analysis_2,
+    "Evaluation": evaluation_measure,
     "Trading Strategy": trading_strategy
 }
 

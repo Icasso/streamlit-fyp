@@ -46,7 +46,7 @@ textblob_distribution = {
     'Value': ['(-1.0 => +1.0)', '(+0.0 => +1.0)', '(*0.5 => *2.0)']
 }
 vader_distribution = {
-    'Sentiment': ['Positive', 'Negative', 'Neutral'],
+    'Sentiment': ['Positive', 'Neutral', 'Negative'],
     'Compound score': ['compound score >= 0.05', 'compound score > -0.05 and compound score < 0.05',
                        'compound score <= -0.05']
 }
