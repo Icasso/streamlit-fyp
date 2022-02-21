@@ -51,7 +51,7 @@ def app():
 
     container_2 = st.container()
     with container_2:
-        st.subheader("Pearson correlation coefficient of stock price against comment volume")
+        st.subheader("Pearson Correlation Coefficient of Stock Price, Trading Volume against Comment Volume")
         col1, col2 = st.columns(2)
         with col1:
             st.write("The correlation coefficient is calculated as follows:")
@@ -69,27 +69,44 @@ scipy.stats.pearsonr(x, y)
         high_p_corr = stats.pearsonr(df['High'], df['count'])
         low_p_corr = stats.pearsonr(df['Low'], df['count'])
         close_p_corr = stats.pearsonr(df['Close'], df['count'])
+        vol_p_corr = stats.pearsonr(df['Volume'], df['count'])
         with col1:
             st.metric("Stock Price - Open & Comment Volume: r", "{:.3f}".format(open_p_corr[0]))
             st.metric("Stock Price - High & Comment Volume: r", "{:.3f}".format(high_p_corr[0]))
             st.metric("Stock Price - Low & Comment Volume: r", "{:.3f}".format(low_p_corr[0]))
             st.metric("Stock Price - Close & Comment Volume: r", "{:.3f}".format(close_p_corr[0]))
+            st.metric("Trading Volume & Comment Volume: r", "{:.3f}".format(vol_p_corr[0]))
         with col2:
             st.metric("Stock Price - Open & Comment Volume: p", "{:.3f}".format(open_p_corr[1]))
             st.metric("Stock Price - High & Comment Volume: p", "{:.3f}".format(high_p_corr[1]))
             st.metric("Stock Price - Low & Comment Volume: p", "{:.3f}".format(low_p_corr[1]))
             st.metric("Stock Price - Close & Comment Volume: p", "{:.3f}".format(close_p_corr[1]))
+            st.metric("Trading Volume & Comment Volume: p", "{:.3f}".format(vol_p_corr[1]))
         with col3:
             fig = go.Figure()
             fig.add_trace(go.Scatter(x=df['Date'], y=df['Open'], name='Open'))
             fig.add_trace(go.Scatter(x=df['Date'], y=df['High'], name='High', yaxis='y2'))
             fig.add_trace(go.Scatter(x=df['Date'], y=df['Low'], name='Low', yaxis='y3'))
             fig.add_trace(go.Scatter(x=df['Date'], y=df['Close'], name='Close', yaxis='y4'))
-            fig.add_trace(go.Scatter(x=df['Date'], y=df['count'], name='Comment Volume', yaxis='y5'))
+            fig.add_trace(go.Scatter(x=df['Date'], y=df['Volume'], name='Trading Volume', yaxis='y5'))
+            fig.add_trace(go.Scatter(x=df['Date'], y=df['count'], name='Comment Volume', yaxis='y6'))
             fig.update_layout(yaxis=dict(visible=False),
                               yaxis2=dict(visible=False, overlaying='y'),
                               yaxis3=dict(visible=False, overlaying='y'),
                               yaxis4=dict(visible=False, overlaying='y'),
-                              yaxis5=dict(visible=False, overlaying='y'))
+                              yaxis5=dict(visible=False, overlaying='y'),
+                              yaxis6=dict(visible=False, overlaying='y'))
 
             st.plotly_chart(fig)
+
+    container_3 = st.container()
+    with container_3:
+        st.subheader("Perason Correlation Coefficient of Stock Price and Different Sentiment Indicators")
+        col1, col2, col3 = st.columns([1, 1, 2])
+        tb_polarity_corr = stats.pearsonr(df['Open'], df['tb_polarity'])
+        with col1:
+            st.metric("Stock Price - Open & TextBlob Polarity: r", "{:.3f}".format(tb_polarity_corr[0]))
+        with col2:
+            st.write("col2")
+        with col3:
+            st.write("col3")
