@@ -45,7 +45,7 @@ def app():
                                                  close=df['Close'])])
             st.plotly_chart(fig)
         with col2:
-            st.header(f"r/wallstreetbets Comment Volume")
+            st.header(f"r/wallstreetbets {symbol} mentioned")
             fig = px.line(df, x="Date", y="count")
             st.plotly_chart(fig)
 
@@ -102,11 +102,40 @@ scipy.stats.pearsonr(x, y)
     container_3 = st.container()
     with container_3:
         st.subheader("Perason Correlation Coefficient of Stock Price and Different Sentiment Indicators")
+        CHOICES = {"tb_polarity": "TextBlob Polarity", "tb_subjectivity": "TextBlob Subjectivity",
+                   "v_pos": "Vader Positive",
+                   "v_neg": "Vader Negative", "v_neu": "Vader Neutral", "v_com": "Vader Compound",
+                   "mv_pos": "Modified Vader Positive",
+                   "mv_neg": "Modified Vader Negative", "mv_neu": "Modified Vader Neutral",
+                   "mv_com": "Modified Vader Compound", "rsi": "Reddit Sentiment Index"}
+        sentiment_state = st.selectbox("Select Sentiment Type", CHOICES.keys(), format_func=lambda x: CHOICES[x])
+        open_res = stats.pearsonr(df['Open'], df[sentiment_state])
+        high_res = stats.pearsonr(df['High'], df[sentiment_state])
+        low_res = stats.pearsonr(df['Low'], df[sentiment_state])
+        close_res = stats.pearsonr(df['Close'], df[sentiment_state])
+        movement_res = stats.pearsonr(df['Movement'], df[sentiment_state])
+        mentioned_res = stats.pearsonr(df['count'], df[sentiment_state])
         col1, col2, col3 = st.columns([1, 1, 2])
-        tb_polarity_corr = stats.pearsonr(df['Open'], df['tb_polarity'])
         with col1:
-            st.metric("Stock Price - Open & TextBlob Polarity: r", "{:.3f}".format(tb_polarity_corr[0]))
+            st.metric(f"Stock Price - Open & {sentiment_state}: r", "{:.3f}".format(open_res[0]))
+            st.metric(f"Stock Price - High & {sentiment_state}: r", "{:.3f}".format(high_res[0]))
+            st.metric(f"Stock Price - Low & {sentiment_state}: r", "{:.3f}".format(low_res[0]))
+            st.metric(f"Stock Price - Close & {sentiment_state}: r", "{:.3f}".format(close_res[0]))
+            st.metric(f"Stock Price - Movement & {sentiment_state}: r", "{:.3f}".format(movement_res[0]))
+            st.metric(f"Comment Volume & {sentiment_state}: r", "{:.3f}".format(mentioned_res[0]))
         with col2:
-            st.write("col2")
+            st.metric(f"Stock Price - Open & {sentiment_state}: r", "{:.3f}".format(open_res[1]))
+            st.metric(f"Stock Price - High & {sentiment_state}: r", "{:.3f}".format(high_res[1]))
+            st.metric(f"Stock Price - Low & {sentiment_state}: r", "{:.3f}".format(low_res[1]))
+            st.metric(f"Stock Price - Close & {sentiment_state}: r", "{:.3f}".format(close_res[1]))
+            st.metric(f"Stock Price - Movement & {sentiment_state}: r", "{:.3f}".format(movement_res[1]))
+            st.metric(f"Comment Volume & {sentiment_state}: r", "{:.3f}".format(mentioned_res[1]))
         with col3:
-            st.write("col3")
+            fig = go.Figure()
+            fig.add_trace(go.Scatter(x=df['Date'], y=df['Movement'], name='Movement'))
+            fig.add_trace(go.Scatter(x=df['Date'], y=df[sentiment_state], name=sentiment_state, yaxis='y2'))
+            fig.update_layout(yaxis=dict(visible=False),
+                              yaxis2=dict(visible=False, overlaying='y'))
+            st.plotly_chart(fig)
+
+    container_4 = st.container()

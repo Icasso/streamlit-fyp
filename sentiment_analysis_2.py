@@ -178,7 +178,7 @@ def app():
                 st.warning("Error while fetching data from PostgreSQL")
                 connection.rollback()
         with col2:
-            st.subheader("Reddit Sentiment Index 🚀")
+            st.subheader("Modified VADER - Compound")
             try:
                 results = query("""
                 SELECT created_utc, ("{0}") FROM sa_modified_vader_compound WHERE created_utc BETWEEN ('{1}') AND ('{2}')
@@ -186,7 +186,7 @@ def app():
                 day_list = [x[0] for x in results]
                 reddit_sentiment_index_list = [x[1] for x in results]
                 fig = px.line(x=day_list, y=reddit_sentiment_index_list,
-                              labels={'x': 'Date', 'y': 'Reddit Sentiment Index'})
+                              labels={'x': 'Date', 'y': 'Modified VADER Compound'})
                 st.plotly_chart(fig)
             except (Exception, psycopg2.Error) as error:
                 print("Error while fetching data from PostgreSQL", error)
