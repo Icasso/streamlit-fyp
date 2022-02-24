@@ -139,3 +139,5 @@ scipy.stats.pearsonr(x, y)
             st.plotly_chart(fig)
 
     container_4 = st.container()
+    with container_4:
+        st.subheader("Predictability of Reddit Sentiment Index")
