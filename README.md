@@ -1,3 +1,4 @@
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io/icasso/streamlit-fyp/main.py)
 ## [Finance Related] FYP Streamlit Web Application
 ### Skill Sets:
 - [x] Language: Python 3.10, Python 3.9
