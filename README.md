@@ -1,3 +1,4 @@
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/Icasso/streamlit-fyp/blob/master/LICENSE)
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io/icasso/streamlit-fyp/main.py)
 ## [Finance Related] FYP Streamlit Web Application
 ### Skill Sets:
