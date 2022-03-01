@@ -1,6 +1,6 @@
 ## [Finance Related] FYP Streamlit Web Application
 ### Skill Sets:
-- [x] Language: Python 3.10
+- [x] Language: Python 3.10, Python 3.9
 - [x] Front-End: Streamlit
 - [x] Back-End: Python
 - [x] Database: PostgreSQL
