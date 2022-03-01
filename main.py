@@ -39,6 +39,7 @@ hide_streamlit_style = """
             tbody th {display:none}
             .blank {display:none}
             footer {visibility: hidden;}
+            [class^='viewerBadge_container'] {visibility: hidden;}
             </style>
             """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
