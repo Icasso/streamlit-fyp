@@ -23,4 +23,6 @@
 ### Cloud Technologies
 - Microsoft Azure : Azure Database for PostgreSQL flexible server
 ### MISC / API
-Stock Data / Time Series / End of Date / Real Time Data - Twelve Data API
+Stock Data / Time Series / End of Date / Real Time Data 
+- Twelve Data API
+- Yahoo Finance
