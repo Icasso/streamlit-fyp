@@ -1,5 +1,5 @@
 import datetime
-
+from datetime import timedelta
 import pandas as pd
 import plotly.express as px
 import psycopg2.extras
@@ -42,8 +42,9 @@ def app():
             col1, col2, col3 = st.columns(3)
             col1.metric(label="Most Mentioned Symbol", value=symbol_list[0])
             col2.metric(label="No. of Comments", value=volume_list[0])
+            print(d)
             try:
-                his_stock_price = yf.download(symbol_list[0], start=d, end=d)
+                his_stock_price = yf.download(symbol_list[0], start=d, end=d + timedelta(days=1))
             except Exception as e:
                 st.error(e)
 
