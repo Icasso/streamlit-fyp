@@ -48,7 +48,7 @@ class BubbleChart:
     def collides_with(self, bubble, bubbles):
         distance = self.outline_distance(bubble, bubbles)
         idx_min = np.argmin(distance)
-        return idx_min if type(idx_min) == np.ndarray else [idx_min]
+        return idx_min if type(idx_min) is np.ndarray else [idx_min]
 
     def collapse(self, n_iterations=50):
         for _i in range(n_iterations):
