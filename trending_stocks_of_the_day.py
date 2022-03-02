@@ -42,7 +42,11 @@ def app():
             col1, col2, col3 = st.columns(3)
             col1.metric(label="Most Mentioned Symbol", value=symbol_list[0])
             col2.metric(label="No. of Comments", value=volume_list[0])
-            his_stock_price = yf.download(symbol_list[0], start=d, end=d)
+            try:
+                his_stock_price = yf.download(symbol_list[0], start=d, end=d)
+            except Exception as e:
+                st.error(e)
+
             print(his_stock_price)
             if len(his_stock_price) > 0:
                 his_stock_price = "{0:.2f}".format(his_stock_price['Close'][0])
