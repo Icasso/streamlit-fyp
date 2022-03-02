@@ -32,7 +32,8 @@ class BubbleChart:
             self.bubbles[:, :2], axis=0, weights=self.bubbles[:, 3]
         )
 
-    def center_distance(self, bubble, bubbles):
+    @staticmethod
+    def center_distance(bubble, bubbles):
         return np.hypot(bubble[0] - bubbles[:, 0],
                         bubble[1] - bubbles[:, 1])
 
