@@ -24,7 +24,6 @@ def app():
         with col1:
             st.write("TextBlob sentiment scores distribution")
             st.table(textblob_distribution)
-            pass
         with col2:
             code = '''
 Input: Reddit Corpus
