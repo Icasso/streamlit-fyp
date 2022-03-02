@@ -4,6 +4,7 @@ import pandas as pd
 import plotly.express as px
 import psycopg2.extras
 import streamlit as st
+import yfinance as yf
 
 from database import connection, cursor
 
@@ -25,8 +26,6 @@ def app():
                               max_value=datetime.date(2021, 11, 28))
     num = st.sidebar.number_input("Most Mentioned Symbols amount", value=10, min_value=1, max_value=100)
     st.sidebar.markdown("---")
-    # TODO text input update
-    # text_input = st.sidebar.text_input("Search for a symbol", value="", max_chars=5)
 
     # Query
     try:
@@ -43,7 +42,11 @@ def app():
             col1, col2, col3 = st.columns(3)
             col1.metric(label="Most Mentioned Symbol", value=symbol_list[0])
             col2.metric(label="No. of Comments", value=volume_list[0])
-            col3.metric("Previous Day Stock Price", value=0)
+            his_stock_price = yf.download(symbol_list[0], start=d, end=d)
+            print(his_stock_price)
+            if len(his_stock_price) > 0:
+                his_stock_price = "{0:.2f}".format(his_stock_price['Close'][0])
+                col3.metric("Previous Day Stock Closing Price", value=his_stock_price)
 
         container_2 = st.container()
         with container_2:
@@ -51,12 +54,6 @@ def app():
             with col1:
                 fig = px.bar(x=symbol_list, y=volume_list, labels={'x': 'Symbol', 'y': 'Volume'},
                              title="Top {0} mentioned stocks on {1}".format(int(num), d.strftime("%Y-%m-%d")))
-                st.plotly_chart(fig)
-            # TODO CHANGE CHART
-            with col2:
-                fig = px.bar(x=symbol_list, y=volume_list, labels={'x': 'Symbol', 'y': 'Volume'},
-                             title="Sentiment for the top {0} mentioned stocks on {1}".format(int(num),
-                                                                                              d.strftime("%Y-%m-%d")))
                 st.plotly_chart(fig)
 
         results = query("""

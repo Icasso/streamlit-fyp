@@ -99,6 +99,7 @@ scipy.stats.pearsonr(x, y)
 
             st.plotly_chart(fig)
 
+    st.write("")
     container_3 = st.container()
     with container_3:
         st.subheader("Perason Correlation Coefficient of Stock Price and Different Sentiment Indicators")
@@ -138,6 +139,29 @@ scipy.stats.pearsonr(x, y)
                               yaxis2=dict(visible=False, overlaying='y'))
             st.plotly_chart(fig)
 
+    st.write("")
     container_4 = st.container()
     with container_4:
-        st.subheader("Predictability of Reddit Sentiment Index")
+        st.subheader(f"Accumulated Predictability of Reddit Sentiment Index")
+        col1, col2, col3 = st.columns([1, 1, 2])
+        prediction = df['Prediction']
+        positive_count = 0
+        negative_count = 0
+        for item in prediction:
+            if item == "correct":
+                positive_count += 1
+            else:
+                negative_count += 1
+        positive_res = positive_count / (positive_count + negative_count) * 100
+        negative_res = negative_count / (positive_count + negative_count) * 100
+        with col1:
+            st.info(f"From: {date_range_from}")
+            st.metric(f"Correct Predictions: {positive_count} out of {positive_count + negative_count} days",
+                      "{:.2f}%".format(positive_res))
+        with col2:
+            st.info(f"To: {date_range_to}")
+            st.metric(f"Incorrect Predictions: {negative_count} out of {positive_count + negative_count} days",
+                      "{:.2f}%".format(negative_res))
+        with col3:
+            fig = px.pie(labels=['Correct', 'Incorrect'], values=[positive_res, negative_res])
+            st.plotly_chart(fig)
