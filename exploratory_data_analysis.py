@@ -30,7 +30,7 @@ top_symbol
         st.header("Most Common Words / Significant words that have an impact on sentiment")
         col1, col2 = st.columns(2)
         with col1:
-            pass
+            st.image("src/WordCloud.png")
         with col2:
             code = '''
             stop_words = stopwords.words('english')
