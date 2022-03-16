@@ -145,23 +145,51 @@ scipy.stats.pearsonr(x, y)
         st.subheader(f"Accumulated Predictability of Reddit Sentiment Index")
         col1, col2, col3 = st.columns([1, 1, 2])
         prediction = df['Prediction']
-        positive_count = 0
-        negative_count = 0
+        tbprediction = df['tbPrediction']
+        dvprediction = df['dvPrediction']
+        positive_count, tb_positive_count, dv_positive_count = 0, 0, 0
+        negative_count, tb_negative_count, dv_negative_count = 0, 0, 0
         for item in prediction:
             if item == "correct":
                 positive_count += 1
             else:
                 negative_count += 1
+        for item in tbprediction:
+            if item == "correct":
+                tb_positive_count += 1
+            else:
+                tb_negative_count += 1
+        for item in dvprediction:
+            if item == "correct":
+                dv_positive_count += 1
+            else:
+                dv_negative_count += 1
         positive_res = positive_count / (positive_count + negative_count) * 100
         negative_res = negative_count / (positive_count + negative_count) * 100
+        tb_positive_res = tb_positive_count / (tb_positive_count + tb_negative_count) * 100
+        tb_negative_res = tb_negative_count / (tb_positive_count + tb_negative_count) * 100
+        dv_positive_res = dv_positive_count / (dv_positive_count + dv_negative_count) * 100
+        dv_negative_res = dv_negative_count / (dv_positive_count + dv_negative_count) * 100
         with col1:
             st.info(f"From: {date_range_from}")
-            st.metric(f"Correct Predictions: {positive_count} out of {positive_count + negative_count} days",
+            st.metric(f"Correct Predictions for RSI: {positive_count} out of {positive_count + negative_count} days",
                       "{:.2f}%".format(positive_res))
+            st.metric(
+                f"Correct Predictions for TextBlob: {tb_positive_count} out of {tb_positive_count + tb_negative_count} days",
+                "{:.2f}%".format(tb_positive_res))
+            st.metric(
+                f"Correct Predictions for VADER: {dv_positive_count} out of {dv_positive_count + dv_negative_count} days",
+                "{:.2f}%".format(dv_positive_res))
         with col2:
             st.info(f"To: {date_range_to}")
             st.metric(f"Incorrect Predictions: {negative_count} out of {positive_count + negative_count} days",
                       "{:.2f}%".format(negative_res))
+            st.metric(
+                f"Incorrect Predictions for TextBlob: {tb_negative_count} out of {tb_positive_count + tb_negative_count} days",
+                "{:.2f}%".format(tb_negative_res))
+            st.metric(
+                f"Incorrect Predictions for VADER: {dv_negative_count} out of {dv_positive_count + dv_negative_count} days",
+                "{:.2f}%".format(dv_negative_res))
         with col3:
             fig = px.pie(labels=['Correct', 'Incorrect'], values=[positive_res, negative_res])
             st.plotly_chart(fig)
