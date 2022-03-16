@@ -1,8 +1,17 @@
 import pandas as pd
 import plotly.express as px
+import psycopg2.extras
 import streamlit as st
 
+from database import connection, cursor
 from tables import reddit_corpus_pre, sample_unprocessed_data, pre_stats, stock_symbol_stats, stock_data_set
+
+
+@st.cache
+def query(sql):
+    cursor.execute(sql)
+    results = cursor.fetchall()
+    return results
 
 
 def app():
@@ -114,3 +123,41 @@ symbol_list'''
             st.info("Statistics overview of 3 Exchanges in US, and the selected stock symbols")
             df = pd.DataFrame(stock_data_set)
             st.table(df)
+
+        st.subheader("Text Vectorization on Term-Document Matrix")
+        col1, col2 = st.columns(2)
+        with col1:
+            st.info(
+                "Sampled Accumulated Term-Document Matrix, illustrating top 20 most frequent words across top 10 mentioned stocks")
+            try:
+                results = query("""
+                SELECT * FROM term_document_matrix Limit 20
+                """)
+                df = pd.DataFrame(results)
+                st.table(df)
+            except (Exception, psycopg2.Error) as error:
+                print("Error while fetching data from PostgreSQL", error)
+                st.warning("Error while fetching data from PostgreSQL")
+                connection.rollback()
+
+        with col2:
+            code = '''
+from sklearn.feature_extraction.text import CountVectorizer
+## Count Vectorizer
+vect = CountVectorizer(stop_words='english')
+vects = vect.fit_transform(body_list)
+data = pd.DataFrame(vects.toarray(), columns=vect.get_feature_names_out())
+data_matrix = data.T
+data_matrix.columns = ['GME', 'AMC', 'BB', 'PLTR', 'TSLA', 'RH', 'NOK', 'RKT', 'AMD', 'TLRY']
+data_matrix['total_count'] = data_matrix.sum(axis=1)
+data_matrix
+
+# Top words
+term_document_matrix = data_matrix.sort_values(by='total_count', ascending=False)
+term_document_matrix
+
+# term_document_matrix.to_pickle('term_document_matrix.pkl')
+term_document_matrix = term_document_matrix.drop(columns=['total_count'])
+term_document_matrix
+            '''
+            st.code(code, language="python")

@@ -32,17 +32,17 @@ st.set_page_config(
     }
 )
 # TODO UNHIDE
-# hide_streamlit_style = """
-#             <style>
-#             header {visibility: hidden;}
-#             #MainMenu {visibility: hidden;}
-#             tbody th {display:none}
-#             .blank {display:none}
-#             footer {visibility: hidden;}
-#             [class^='viewerBadge_container'] {visibility: hidden;}
-#             </style>
-#             """
-# st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+hide_streamlit_style = """
+            <style>
+            header {visibility: hidden;}
+            #MainMenu {visibility: hidden;}
+            tbody th {display:none}
+            .blank {display:none}
+            footer {visibility: hidden;}
+            [class^='viewerBadge_container'] {visibility: hidden;}
+            </style>
+            """
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 st.sidebar.title("Navigation")
 selection = st.sidebar.selectbox("Dashboard", list(PAGES.keys()))
