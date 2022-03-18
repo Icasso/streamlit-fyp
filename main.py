@@ -6,7 +6,6 @@ import reddit_community_distribution
 import reddit_corpus
 import sentiment_analysis
 import sentiment_analysis_2
-import trading_strategy
 import trending_stocks_of_the_day
 
 PAGES = {
@@ -17,7 +16,6 @@ PAGES = {
     "Sentiment Analysis I": sentiment_analysis,
     "Sentiment Analysis II": sentiment_analysis_2,
     "Evaluation": evaluation_measure,
-    "Trading Strategy": trading_strategy
 }
 
 st.set_page_config(

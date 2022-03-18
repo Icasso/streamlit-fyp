@@ -158,7 +158,6 @@ def app():
                 st.warning("Error while fetching data from PostgreSQL")
                 connection.rollback()
 
-    st.write("---")
     container_5 = st.container()
     with container_5:
         col1, col2 = st.columns(2)
