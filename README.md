@@ -10,6 +10,9 @@
 ### Data Collection, Data Pre-Processing, Exploratory Data Analysis, Sentiment Analysis, Topic Modeling Procedures
 - https://github.com/Icasso/DataSpell-EAP-Projects
 
+## Demo
+[Placeholder]
+
 ## Getting Started
 There are two ways to run this web application
 1. You can navigate to https://share.streamlit.io/icasso/streamlit-fyp/main.py , perferred on Chrome browser
