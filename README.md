@@ -26,20 +26,20 @@ streamlit run main.py
 ```
 
 
-### Skill Sets:
+### Skill Sets but not limited to:
 - [x] Language: Python 3.10, Python 3.9
 - [x] Front-End: Streamlit (Python)
 - [x] Back-End: Streamlit (Python)
 - [x] Database: PostgreSQL
 ----
-### Python Libraries included
+### Python Libraries included but not limited to
 - streamlit
 - numpy
 - pandas
 - plotly
 - matplotlib
 - psycopg2
-### Libraries included (Juypter Notebook Related)
+### Libraries included but not limited to (Juypter Notebook Related)
 - pmaw
 - sqlalchemy
 - sklearn
@@ -53,3 +53,8 @@ streamlit run main.py
 Stock Data / Time Series / End of Date / Real Time Data 
 - Twelve Data API
 - Yahoo Finance
+
+### Citation & Worth Mentions
+> Hutto, C.J. & Gilbert, E.E. (2014). VADER: A Parsimonious Rule-based Model for Sentiment Analysis of Social Media Text. Eighth International Conference on Weblogs and Social Media (ICWSM-14). Ann Arbor, MI, June 2014.
+### Research Source
+https://ojs.aaai.org/index.php/ICWSM/article/view/14550
